@@ -1,6 +1,6 @@
-app = "Bbngxxapichaba7"   # أو أي اسم تختاره
+app = "Bbngxxapichaba7"  # اسم التطبيق على Fly.io
 
-primary_region = "cdg"   # اختار الريجن القريب
+primary_region = "cdg"  # ريجن قريب (باريس)
 
 [build]
   dockerfile = "Dockerfile"
@@ -23,3 +23,9 @@ primary_region = "cdg"   # اختار الريجن القريب
   [[services.ports]]
     port = 443
     handlers = ["tls", "http"]
+
+  [[services.tcp_checks]]
+    grace_period = "5s"
+    interval = "10s"
+    restart_limit = 0
+    timeout = "2s"
