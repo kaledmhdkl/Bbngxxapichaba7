@@ -1,0 +1,36 @@
+app = "bngx-ghost"  # غيرها لاسم مشروعك على Fly.io
+
+primary_region = "cdg"  # اختر ريجن قريب (cdg=باريس, mad=مدريد, ams=أمستردام)
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "15028"
+
+[http_service]
+  internal_port = 15028
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 15028
+  processes = ["app"]
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+  [[services.tcp_checks]]
+    grace_period = "5s"
+    interval = "10s"
+    restart_limit = 0
+    timeout = "2s"
