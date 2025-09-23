@@ -566,6 +566,13 @@ def execute_command_all():
     if not command:
         return jsonify({'error': 'Command parameter is required'}), 400
 
+    # استخدم MASTER_ACCOUNT_ID فقط
+    account_id = MASTER_ACCOUNT_ID
+    if account_id not in clients:
+        return jsonify({'error': f'Master client {account_id} not found'}), 404
+
+    client = clients[account_id]
+
     if "=" in command:
         cmd, arg = command.split("=", 1)
     else:
@@ -581,16 +588,14 @@ def execute_command_all():
         "4174562491": "FELLOW ME"
     }
 
-    results = {}
-    for account_id, client in clients.items():
-        account_name = ghost_names.get(str(account_id), str(account_id))
-        if cmd in ["/bngx", "/lag"] and arg:
-            result = client.execute_command(cmd, arg, account_name)
-            results[account_id] = f"{result} | Name: {account_name}"
-        else:
-            results[account_id] = f"Unknown or invalid command: {command} | Name: {account_name}"
+    account_name = ghost_names.get(str(account_id), str(account_id))
+    if cmd in ["/bngx", "/lag"] and arg:
+        result = client.execute_command(cmd, arg, account_name)
+        final_result = {account_id: f"{result} | Name: {account_name}"}
+    else:
+        final_result = {account_id: f"Unknown or invalid command: {command} | Name: {account_name}"}
 
-    return jsonify({'results': results})
+    return jsonify({'results': final_result})
 
 @app.route('/shutdown', methods=['GET'])
 def shutdown_server():
