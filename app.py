@@ -489,8 +489,7 @@ def start_client():
     account_id = request.args.get('account_id')
     password = request.args.get('password')
 
-    if not account_id or not password:
-        return jsonify({'error
+
 
     if not account_id or not password:
         return jsonify({'error': 'Account ID and password are required'}), 400
